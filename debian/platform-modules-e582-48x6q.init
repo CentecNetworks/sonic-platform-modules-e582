@@ -1,0 +1,50 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          setup-board
+# Required-Start:
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start:     S
+# Default-Stop:      0 6
+# Short-Description: Setup E582-48x6q board.
+### END INIT INFO
+
+case "$1" in
+start)
+	echo -n "Setting up board... "
+
+        depmod -a
+        modprobe lm77
+        modprobe i2c-mux-pca954x
+        modprobe adt7470
+        modprobe centec_e582_48x6q_platform
+        modprobe dal
+        modprobe centec_at24c64
+
+	echo "done."
+	;;
+
+stop)
+	echo "done."
+        rmmod centec_at24c64
+        rmmod lm77
+        rmmod dal
+        rmmod centec_e582_48x6q_platform
+        rmmod i2c-mux-pca954x
+        rmmod adt7470
+	;;
+
+force-reload|restart)
+	echo "Not supported"
+	;;
+
+*)
+	echo "Usage: /etc/init.d/platform-modules-e582-48x6q.init {start|stop}"
+	exit 1
+	;;
+esac
+
+exit 0
+
