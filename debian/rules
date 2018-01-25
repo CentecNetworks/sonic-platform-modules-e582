@@ -2,31 +2,32 @@
 
 export INSTALL_MOD_DIR:=extra
 
-PACKAGE_NAME := platform-modules-e582-48x6q
 KVERSION   ?= $(shell uname -r)
 KERNEL_SRC :=  /lib/modules/$(KVERSION)
-MODULE_SRC := $(shell pwd)/modules
-SCRIPT_SRC := $(shell pwd)/scripts
+MOD_SRC_DIR:= $(shell pwd)
+MODULE_DIRS:= 48x6q 48x2q4z
 
 %:
 	dh $@
 
 override_dh_auto_build:
-	make -C $(KERNEL_SRC)/build M=$(MODULE_SRC)
+	(for mod in $(MODULE_DIRS); do \
+		make -C $(KERNEL_SRC)/build M=$(MOD_SRC_DIR)/$${mod}/modules; \
+	done)
 
 override_dh_auto_install:
-	dh_installdirs -p$(PACKAGE_NAME) $(KERNEL_SRC)/$(INSTALL_MOD_DIR)
-	cp $(MODULE_SRC)/*.ko debian/$(PACKAGE_NAME)/$(KERNEL_SRC)/$(INSTALL_MOD_DIR)
-	dh_installdirs -p$(PACKAGE_NAME) usr/local/bin
-	cp -r $(SCRIPT_SRC)/* debian/$(PACKAGE_NAME)/usr/local/bin
+	(for mod in $(MODULE_DIRS); do \
+		dh_installdirs -pplatform-modules-$${mod} \
+			$(KERNEL_SRC)/$(INSTALL_MOD_DIR); \
+		cp $(MOD_SRC_DIR)/$${mod}/modules/*.ko \
+			debian/platform-modules-$${mod}/$(KERNEL_SRC)/$(INSTALL_MOD_DIR); \
+	done)
 
 override_dh_usrlocal:
 
-override_dh_pysupport:
-
 override_dh_clean:
 	dh_clean
-	rm -f $(MODULE_SRC)/*.o $(MODULE_SRC)/*.ko $(MODULE_SRC)/*.mod.c $(MODULE_SRC)/.*.cmd
-	rm -f $(MODULE_SRC)/Module.markers $(MODULE_SRC)/Module.symvers $(MODULE_SRC)/modules.order
-	rm -rf $(MODULE_SRC)/.tmp_versions
+	(for mod in $(MODULE_DIRS); do \
+		make -C $(KERNEL_SRC)/build M=$(MOD_SRC_DIR)/$${mod}/modules clean; \
+	done)
 

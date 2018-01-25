@@ -8,43 +8,31 @@
 # Should-Stop:
 # Default-Start:     S
 # Default-Stop:      0 6
-# Short-Description: Setup E582-48x6q board.
+# Short-Description: Setup e582-48x6q board.
 ### END INIT INFO
 
 case "$1" in
 start)
-	echo -n "Setting up board... "
+    echo -n "Setting up board... "
+    /usr/local/bin/48x6q_platform.sh init
 
-        depmod -a
-        modprobe lm77
-        modprobe i2c-mux-pca954x
-        modprobe adt7470
-        modprobe centec_e582_48x6q_platform
-        modprobe dal
-        modprobe centec_at24c64
-
-	echo "done."
-	;;
+    echo "done."
+    ;;
 
 stop)
-	echo "done."
-        rmmod centec_at24c64
-        rmmod lm77
-        rmmod dal
-        rmmod centec_e582_48x6q_platform
-        rmmod i2c-mux-pca954x
-        rmmod adt7470
-	;;
+    /usr/local/bin/48x6q_platform.sh deinit
+    echo "done."
+
+    ;;
 
 force-reload|restart)
-	echo "Not supported"
-	;;
+    echo "Not supported"
+    ;;
 
 *)
-	echo "Usage: /etc/init.d/platform-modules-e582-48x6q.init {start|stop}"
-	exit 1
-	;;
+    echo "Usage: /etc/init.d/platform-modules-e582-48x6q.init {start|stop}"
+    exit 1
+    ;;
 esac
 
 exit 0
-
