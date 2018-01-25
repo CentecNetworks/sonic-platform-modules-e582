@@ -1,7 +1,0 @@
-# This file describes the maintainers for sonic-platform-modules-e582-48x6q
-# See the SONiC project governance document for more information
-
-Name = "xuwj"
-Email = "xuwj@centecnetworks.com"
-Github = xuwj
-Mailinglist = xuwj@centecnetworks.com
