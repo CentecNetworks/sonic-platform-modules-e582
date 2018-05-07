@@ -558,6 +558,14 @@ _dal_set_msi_enabe(unsigned int lchip, unsigned int irq_num)
 
     if (irq_num == 1)
     {
+        if (msi_irq_base[lchip])
+        {
+            dal_interrupt_unregister(msi_irq_base[lchip]);
+            pci_disable_msi(dal_dev[lchip].pci_dev);
+            msi_used = 0;
+            msi_irq_base[lchip] = 0;
+            msi_irq_num[lchip] = 0;
+        }
         ret = pci_enable_msi(dal_dev[lchip].pci_dev);
         if (ret)
         {

@@ -14,13 +14,13 @@
 case "$1" in
 start)
     echo -n "Setting up board... "
-    /usr/local/bin/48x6q_platform.sh init
+    /usr/bin/48x6q_platform.sh init
 
     echo "done."
     ;;
 
 stop)
-    /usr/local/bin/48x6q_platform.sh deinit
+    /usr/bin/48x6q_platform.sh deinit
     echo "done."
 
     ;;
@@ -30,7 +30,7 @@ force-reload|restart)
     ;;
 
 *)
-    echo "Usage: /etc/init.d/platform-modules-e582-48x6q.init {start|stop}"
+    echo "Usage: service platform-modules-e582-48x6q {start|stop}"
     exit 1
     ;;
 esac
